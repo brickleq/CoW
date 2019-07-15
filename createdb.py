@@ -9,16 +9,16 @@ from mongoengine import *
 connect('moo', host='localhost', port=27017)
 
 #%%
-class COW_country_codes(Document):
+class country_codes(Document):
     StateAbb = StringField(required=True)
     CCode = IntField(required=True)
     StateNme = StringField(required=True)
-    datetime = DateTimeField(default=dt.datetime.now)
+    updated = DateTimeField(default=dt.datetime.utcnow)
 
 countryCodes = pd.read_csv("COW country codes.csv")
 
 for i in range(len(countryCodes)):
-    post = COW_country_codes(
+    post = country_codes(
     StateAbb = str(countryCodes['StateAbb'][i]),
     CCode = str(countryCodes['CCode'][i]),
     StateNme = str(countryCodes['StateNme'][i])
@@ -27,7 +27,86 @@ for i in range(len(countryCodes)):
         post.save()
     except: 
         print('There was an error posting document ' + i)
+#%%
+#%%
+midloca_2_0 = pd.read_csv('midloc2.0/MIDLOCA_2.0.csv', encoding='ISO-8859-1')
+midloca_2_0.head()
+columns = midloca_2_0.columns.to_list()
+# print(columns)
+# for column in columns:
+#    print(column + ' = IntField()')
+# for column in columns:
+#     print(column + ' = int(midloca_2_0[\'' + column + '\'][i]),')
 
+class midloc_a(Document):
+    _id = IntField(required=True)
+    year = IntField(required=True)
+    dispnum = IntField(required=True)
+    location = StringField(required=False)
+    measuringpoint = StringField(required=False, default='')
+    longitude = FloatField(required=False, default='')
+    latitude = FloatField(required=False)
+    coordinates = PointField(required=False)
+    precision = IntField(required=True)
+    howobtained = StringField(required=False)
+    precision_comment = StringField(required=False)
+    general_comment = StringField(required=False)
+    priogrid_cell = FloatField(required=False)
+    midloc11_location = StringField(required=False)
+    midloc11_midlocmeasuringpoint = StringField(required=False)
+    midloc11_latitude = FloatField(required=False)
+    midloc11_longitude = FloatField(required=False)
+    midloc11_precision = IntField(required=False)
+    updated = DateTimeField(required=True, default=dt.datetime.utcnow)
+    meta = {'strict': False}
+
+for i in range(len(midloca_2_0)):
+    if midloca_2_0['midloc2_precision'][i] == -99:
+        post = midloc_a(
+            _id = int(midloca_2_0['dispnum'][i]),
+            year = int(midloca_2_0['year'][i]),
+            dispnum = int(midloca_2_0['dispnum'][i]),
+            # location = str(midloca_2_0['midloc2_location'][i]),
+            # measuringpoint = str(midloca_2_0['midloc2_measuringpoint'][i]),
+            # longitude = float(midloca_2_0['midloc2_xlongitude'][i]),
+            # latitude = float(midloca_2_0['midloc2_ylatitude'][i]),
+            # coordinates = [midloca_2_0['midloc2_xlongitude'][i], midloca_2_0['midloc2_ylatitude'][i]],
+            precision = int(midloca_2_0['midloc2_precision'][i]),
+            # howobtained = str(midloca_2_0['midloc2_howobtained'][i]),
+            # precision_comment = str(midloca_2_0['midloc2_precision_comment'][i]),
+            # general_comment = str(midloca_2_0['midloc2_general_comment'][i]),
+            # priogrid_cell = midloca_2_0['priogrid_cell'][i],
+            # midloc11_location = str(midloca_2_0['midloc11_location'][i]),
+            # midloc11_midlocmeasuringpoint = str(midloca_2_0['midloc11_midlocmeasuringpoint'][i]),
+            # midloc11_latitude = float(midloca_2_0['midloc11_latitude'][i]),
+            # midloc11_longitude = float(midloca_2_0['midloc11_longitude'][i]),
+            # midloc11_precision = float(midloca_2_0['midloc11_precision'][i]),
+    )
+    else:
+        post = midloc_a(
+            _id = int(midloca_2_0['dispnum'][i]),
+            year = int(midloca_2_0['year'][i]),
+            dispnum = int(midloca_2_0['dispnum'][i]),
+            location = str(midloca_2_0['midloc2_location'][i]),
+            measuringpoint = str(midloca_2_0['midloc2_measuringpoint'][i]),
+            longitude = float(midloca_2_0['midloc2_xlongitude'][i]),
+            latitude = float(midloca_2_0['midloc2_ylatitude'][i]),
+            coordinates = [midloca_2_0['midloc2_xlongitude'][i], midloca_2_0['midloc2_ylatitude'][i]],
+            precision = int(midloca_2_0['midloc2_precision'][i]),
+            howobtained = str(midloca_2_0['midloc2_howobtained'][i]),
+            precision_comment = str(midloca_2_0['midloc2_precision_comment'][i]),
+            general_comment = str(midloca_2_0['midloc2_general_comment'][i]),
+            priogrid_cell = midloca_2_0['priogrid_cell'][i],
+            midloc11_location = str(midloca_2_0['midloc11_location'][i]),
+            midloc11_midlocmeasuringpoint = str(midloca_2_0['midloc11_midlocmeasuringpoint'][i]),
+            midloc11_latitude = float(midloca_2_0['midloc11_latitude'][i]),
+            midloc11_longitude = float(midloca_2_0['midloc11_longitude'][i]),
+            midloc11_precision = float(midloca_2_0['midloc11_precision'][i]),
+        )
+    try:
+        post.save()
+    except: 
+        print('There was an error posting document ' + str(i))
 #%%
 MIDA_4_3 = pd.read_csv("MID 4.3/MIDA 4.3.csv")
 # columns = MIDA_4_3.columns.to_list()
@@ -40,7 +119,7 @@ MIDA_4_3 = pd.read_csv("MID 4.3/MIDA 4.3.csv")
 # for column in columns:
 #    print(column + ' = IntField()')
 #%%
-class MIDA(Document):
+class mid_a(DynamicDocument):
     dispnum3 = IntField()
     dispnum4 = IntField()
     stday = IntField()
@@ -60,16 +139,16 @@ class MIDA(Document):
     recip = IntField()
     numa = IntField()
     numb = IntField()
-    link1 = StringField()
-    link2 = StringField()
-    link3 = StringField()
-    ongo2010 = BooleanField()
-    version = StringField()
-    datetime = DateTimeField(default=dt.datetime.now)
+    link1 = IntField()
+    link2 = IntField()
+    link3 = IntField()
+    ongo2010 = IntField()
+    version = FloatField()
+    updated = DateTimeField(required=True, default=dt.datetime.utcnow)
     meta = {'strict': False}
 
 for i in range(len(MIDA_4_3)):
-    post = MIDA(
+    post = mid_a(
         dispnum3 = int(MIDA_4_3.dispnum3[i]),
         dispnum4 = int(MIDA_4_3.dispnum4[i]),
         stday = int(MIDA_4_3.stday[i]),
@@ -93,8 +172,7 @@ for i in range(len(MIDA_4_3)):
         link2 = str(MIDA_4_3.link2[i]),
         link3 = str(MIDA_4_3.link3[i]),
         ongo2010 = int(MIDA_4_3.ongo2010[i]),
-        version = str(MIDA_4_3.version[i]),
-        datetime = dt.datetime.now
+        version = float(MIDA_4_3.version[i]),
     )
     try:
         post.save()
@@ -346,59 +424,6 @@ for i in range(len(midloci_2_0)):
     try:
         post.save()
     except:
-        print('There was an error posting document ' + str(i))
-#%%
-midloca_2_0 = pd.read_csv('midloc2.0/MIDLOCA_2.0.csv', encoding='ISO-8859-1')
-midloca_2_0.head()
-columns = midloca_2_0.columns.to_list()
-print(columns)
-for column in columns:
-   print(column + ' = IntField()')
-for column in columns:
-    print(column + ' = int(midloca_2_0[\'' + column + '\'][i]),')
-
-class midloca(DynamicDocument):
-    year = IntField()
-    dispnum = IntField()
-    midloc2_location = StringField()
-    midloc2_measuringpoint = StringField()
-    midloc2_xlongitude = FloatField()
-    midloc2_ylatitude = FloatField()
-    midloc2_precision = FloatField()
-    midloc2_howobtained = StringField()
-    midloc2_precision_comment = StringField()
-    midloc2_general_comment = StringField()
-    priogrid_cell = FloatField()
-    midloc11_location = StringField()
-    midloc11_midlocmeasuringpoint = StringField()
-    midloc11_latitude = FloatField()
-    midloc11_longitude = FloatField()
-    midloc11_precision = IntField()
-    datetime = DateTimeField(default=dt.datetime.utcnow)
-    meta = {'strict': False}
-
-for i in range(len(midloca_2_0)):
-    post = midloca(
-        year = int(midloca_2_0['year'][i]),
-        dispnum = int(midloca_2_0['dispnum'][i]),
-        midloc2_location = str(midloca_2_0['midloc2_location'][i]),
-        midloc2_measuringpoint = str(midloca_2_0['midloc2_measuringpoint'][i]),
-        midloc2_xlongitude = float(midloca_2_0['midloc2_xlongitude'][i]),
-        midloc2_ylatitude = float(midloca_2_0['midloc2_ylatitude'][i]),
-        midloc2_precision = float(midloca_2_0['midloc2_precision'][i]),
-        midloc2_howobtained = str(midloca_2_0['midloc2_howobtained'][i]),
-        midloc2_precision_comment = str(midloca_2_0['midloc2_precision_comment'][i]),
-        midloc2_general_comment = str(midloca_2_0['midloc2_general_comment'][i]),
-        priogrid_cell = midloca_2_0['priogrid_cell'][i],
-        midloc11_location = str(midloca_2_0['midloc11_location'][i]),
-        midloc11_midlocmeasuringpoint = str(midloca_2_0['midloc11_midlocmeasuringpoint'][i]),
-        midloc11_latitude = float(midloca_2_0['midloc11_latitude'][i]),
-        midloc11_longitude = float(midloca_2_0['midloc11_longitude'][i]),
-        midloc11_precision = float(midloca_2_0['midloc11_precision'][i]),
-    )
-    try:
-        post.save()
-    except: 
         print('There was an error posting document ' + str(i))
 #%%
 Interstate_War_Data_4_0 = pd.read_csv('Inter-StateWarData_v4.0.csv')
