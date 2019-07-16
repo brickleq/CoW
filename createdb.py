@@ -56,6 +56,7 @@ class midloc_a(Document):
     midloc11_midlocmeasuringpoint = StringField(required=False)
     midloc11_latitude = FloatField(required=False)
     midloc11_longitude = FloatField(required=False)
+    midloc11_coordinates = PointField(required=False)
     midloc11_precision = IntField(required=False)
     updated = DateTimeField(required=True, default=dt.datetime.utcnow)
     meta = {'strict': False}
@@ -80,6 +81,7 @@ for i in range(len(midloca_2_0)):
             # midloc11_midlocmeasuringpoint = str(midloca_2_0['midloc11_midlocmeasuringpoint'][i]),
             # midloc11_latitude = float(midloca_2_0['midloc11_latitude'][i]),
             # midloc11_longitude = float(midloca_2_0['midloc11_longitude'][i]),
+            # midloc11_coordinates = 
             # midloc11_precision = float(midloca_2_0['midloc11_precision'][i]),
     )
     else:
@@ -101,6 +103,7 @@ for i in range(len(midloca_2_0)):
             midloc11_midlocmeasuringpoint = str(midloca_2_0['midloc11_midlocmeasuringpoint'][i]),
             midloc11_latitude = float(midloca_2_0['midloc11_latitude'][i]),
             midloc11_longitude = float(midloca_2_0['midloc11_longitude'][i]),
+            midloc11_coordiantes = [midloc11_longitude[i],midloc11_latitude[i]]
             midloc11_precision = float(midloca_2_0['midloc11_precision'][i]),
         )
     try:
@@ -108,7 +111,7 @@ for i in range(len(midloca_2_0)):
     except: 
         print('There was an error posting document ' + str(i))
 #%%
-MIDA_4_3 = pd.read_csv("MID 4.3/MIDA 4.3.csv")
+MIDA_4_3 = pd.read_csv("Resources/MID 4.3/MIDA 4.3.csv")
 # columns = MIDA_4_3.columns.to_list()
 # print(columns)
 # for column in columns:
@@ -119,12 +122,13 @@ MIDA_4_3 = pd.read_csv("MID 4.3/MIDA 4.3.csv")
 # for column in columns:
 #    print(column + ' = IntField()')
 #%%
-class mid_a(DynamicDocument):
-    dispnum3 = IntField()
+class mid_a(Document):
+    _dispnum3 = IntField(unique=True)
     dispnum4 = IntField()
     stday = IntField()
     stmon = IntField()
     styear = IntField()
+    start_date = DateField()
     endday = IntField()
     endmon = IntField()
     endyear = IntField()
@@ -139,21 +143,28 @@ class mid_a(DynamicDocument):
     recip = IntField()
     numa = IntField()
     numb = IntField()
-    link1 = IntField()
-    link2 = IntField()
-    link3 = IntField()
+    link1 = StringField()
+    link2 = StringField()
+    link3 = StringField()
     ongo2010 = IntField()
     version = FloatField()
     updated = DateTimeField(required=True, default=dt.datetime.utcnow)
     meta = {'strict': False}
 
 for i in range(len(MIDA_4_3)):
+    if int(MIDA_4_3.stday[i]) != -9:    
+        start_date = str(MIDA_4_3.styear[i]) + '-' + str(MIDA_4_3.stmon[i]) + '-' + str(MIDA_4_3.stday[i])
+        start_date = dt.datetime.strptime(start_date, '%Y-%m-%d')
+    else:
+        start_date = str(MIDA_4_3.styear[i]) + '-' + str(MIDA_4_3.stmon[i])
+        start_date = dt.datetime.strptime(start_date, '%Y-%m')
     post = mid_a(
-        dispnum3 = int(MIDA_4_3.dispnum3[i]),
+        _dispnum3 = int(MIDA_4_3.dispnum3[i]),
         dispnum4 = int(MIDA_4_3.dispnum4[i]),
         stday = int(MIDA_4_3.stday[i]),
         stmon = int(MIDA_4_3.stmon[i]),
         styear = int(MIDA_4_3.styear[i]),
+        start_date = start_date,
         endday = int(MIDA_4_3.endday[i]),
         endmon = int(MIDA_4_3.endmon[i]),
         endyear = int(MIDA_4_3.endyear[i]),
