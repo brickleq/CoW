@@ -2,16 +2,128 @@
 # To add a new markdown cell, type '#%% [markdown]'
 
 #%%
+import datetime as dt
 import pandas as pd
+from datetime import datetime
 from pymongo import *
 from mongoengine import *
 
-from config import database, username, password, authentication_source, host, port
+from config import database, username, password, authentication_source, replicaset, host, port
 
 # Connect to database with MongoEngine
-connect(database, username=username, password=password, authentication_source=authentication_source, host=host, port=port)
+disconnect()
+# connect(database, username=username, password=password, authentication_source=authentication_source, replicaset=replicaset, host=host, port=port)
+connect('cow-local')
 
 
+#%%
+class country_codes(Document):
+    _id = IntField(required=True)
+    _StateAbb = StringField(required=True)
+    _CCode = IntField(required=True)
+    StateNme = StringField(required=True)
+    updated = DateTimeField(default=datetime.utcnow)
+#%%
+countryCodes = pd.read_csv("/Users/pbl/Repos/CoW/Resources/COW country codes.csv")
+countryCodes.head()
+
+#%%
+for i in range(len(countryCodes)):
+    post = country_codes(
+    _id = i,
+    _StateAbb = str(countryCodes['StateAbb'][i]),
+    _CCode = str(countryCodes['CCode'][i]),
+    StateNme = str(countryCodes['StateNme'][i])
+    )
+    try:
+        post.save()
+        print('Success posting record ' + str(i))
+    except: 
+        print('ERROR posting document ' + str(i))
+
+#%%
+system2016 = pd.read_csv('/Users/pbl/Repos/CoW/Resources/system2016.csv')
+system2016.head()
+#%%
+len(system2016['ccode'].unique())
+#%%
+class System2016(Document):
+    _id = IntField(required=True)
+    stateabb = ReferenceField(country_codes, required=True)
+    ccode = IntField(required=True)
+    year = IntField(required=True)
+    version = IntField(required=True)
+    updated = DateTimeField(default=datetime.utcnow)
+
+for i in range(len(system2016)):
+    year = str(system2016['year'][i])
+    post = System2016(
+        _id = i,
+        stateabb = system2016['stateabb'][i],
+        ccode = system2016['ccode'][i],
+        year = year,
+        version = system2016['version'][i]
+    )
+    try:
+        post.save()
+        print('Success posting document ' + str(i))
+    except: 
+        print('ERROR posting document ' + str(i))
+#%%
+states2016 = pd.read_csv('/Users/pbl/Repos/CoW/Resources/states2016.csv')
+states2016.head()
+
+#%%
+class States2016(Document):
+    _id = IntField(required=True)
+    stateabb = StringField(required=True)
+    ccode = IntField(required=True)
+    statenme = StringField(required=False)
+    styear = IntField(required=True)
+    stmonth = IntField(required=False)
+    stday = IntField(required=False)
+    endyear = IntField(required=True)
+    endmonth = IntField(required=False)
+    endday = IntField(required=False)
+    startDate = DateTimeField(required=True)
+    endDate = DateTimeField(required=True)
+    version = IntField(required=True)
+    updated = DateTimeField(default=datetime.utcnow)
+
+#%%
+for i in range(len(states2016)):
+    styear = states2016['styear'][i]
+    stmonth = states2016['stmonth'][i]
+    stday = states2016['stday'][i]
+    endyear = states2016['endyear'][i]
+    endmonth = states2016['endmonth'][i]
+    endday = states2016['endday'][i]
+    #startDate = datetime.strptime((str(styear) + '-' + str(stmonth) + '-' + str(stday)), '%Y/%m/%d')
+    startDate = str(styear) + '-' + str(stmonth) + '-' + str(stday)
+    endDate = str(endyear) + '-' + str(endmonth) + '-' + str(endday)
+    startDate = datetime.strptime(startDate, '%Y-%m-%d').date()
+    endDate = datetime.strptime(endDate, '%Y-%m-%d').date()
+    #print(startDate,endDate) 
+    post = States2016(
+        _id = i,
+        stateabb = states2016['stateabb'][i],
+        ccode = states2016['ccode'][i],
+        statenme = states2016['statenme'][i],
+        styear = styear,
+        stmonth = stmonth,
+        stday = stday,
+        endyear = endyear,
+        endmonth = endmonth,
+        endday = endday,
+        startDate = startDate,
+        endDate = endDate,
+        version = states2016['version'][i]
+        )
+    try:
+        post.save()
+        print('Success posting document ' + str(i))
+    except: 
+        print('ERROR posting document ' + str(i))
 
 #%%
 outcome = {
@@ -150,3 +262,8 @@ class RevType2(EmbeddedDocument):
     _id = IntField()
     revtype2 = StringField()
     
+
+#%%
+
+
+#%%
