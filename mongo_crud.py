@@ -8,7 +8,7 @@ from datetime import datetime
 from pymongo import *
 from mongoengine import *
 
-from config import database, username, password, authentication_source, replicaset, host, port
+# from config import database, username, password, authentication_source, replicaset, host, port
 
 # Connect to database with MongoEngine
 disconnect()
@@ -24,7 +24,7 @@ class country_codes(Document):
     StateNme = StringField(required=True)
     updated = DateTimeField(default=datetime.utcnow)
 #%%
-countryCodes = pd.read_csv("/Users/pbl/Repos/CoW/Resources/COW country codes.csv")
+countryCodes = pd.read_csv('Resources/COW country codes.csv')
 countryCodes.head()
 
 #%%
@@ -42,10 +42,9 @@ for i in range(len(countryCodes)):
         print('ERROR posting document ' + str(i))
 
 #%%
-system2016 = pd.read_csv('/Users/pbl/Repos/CoW/Resources/system2016.csv')
+system2016 = pd.read_csv('Resources/system2016.csv')
 system2016.head()
-#%%
-len(system2016['ccode'].unique())
+
 #%%
 class System2016(Document):
     _id = IntField(required=True)
@@ -70,7 +69,7 @@ for i in range(len(system2016)):
     except: 
         print('ERROR posting document ' + str(i))
 #%%
-states2016 = pd.read_csv('/Users/pbl/Repos/CoW/Resources/states2016.csv')
+states2016 = pd.read_csv('Resources/states2016.csv')
 states2016.head()
 
 #%%
@@ -98,12 +97,10 @@ for i in range(len(states2016)):
     endyear = states2016['endyear'][i]
     endmonth = states2016['endmonth'][i]
     endday = states2016['endday'][i]
-    #startDate = datetime.strptime((str(styear) + '-' + str(stmonth) + '-' + str(stday)), '%Y/%m/%d')
     startDate = str(styear) + '-' + str(stmonth) + '-' + str(stday)
     endDate = str(endyear) + '-' + str(endmonth) + '-' + str(endday)
     startDate = datetime.strptime(startDate, '%Y-%m-%d').date()
-    endDate = datetime.strptime(endDate, '%Y-%m-%d').date()
-    #print(startDate,endDate) 
+    endDate = datetime.strptime(endDate, '%Y-%m-%d').date() 
     post = States2016(
         _id = i,
         stateabb = states2016['stateabb'][i],
@@ -118,6 +115,56 @@ for i in range(len(states2016)):
         startDate = startDate,
         endDate = endDate,
         version = states2016['version'][i]
+        )
+    try:
+        post.save()
+        print('Success posting document ' + str(i))
+    except: 
+        print('ERROR posting document ' + str(i))
+
+#%%
+majors2016 = pd.read_csv('Resources/majors2016.csv')
+majors2016.head()
+#%%
+class Majors2016(Document):
+    _id = IntField(required=True)
+    stateabb = StringField(required=True)
+    ccode = IntField(required=True)
+    styear = IntField(required=True)
+    stmonth = IntField(required=False)
+    stday = IntField(required=False)
+    endyear = IntField(required=True)
+    endmonth = IntField(required=False)
+    endday = IntField(required=False)
+    startDate = DateTimeField(required=True)
+    endDate = DateTimeField(required=True)
+    version = IntField(required=True)
+    updated = DateTimeField(default=datetime.utcnow)
+
+for i in range(len(majors2016)):
+    styear = majors2016['styear'][i]
+    stmonth = majors2016['stmonth'][i]
+    stday = majors2016['stday'][i]
+    endyear = majors2016['endyear'][i]
+    endmonth = majors2016['endmonth'][i]
+    endday = majors2016['endday'][i]
+    startDate = str(styear) + '-' + str(stmonth) + '-' + str(stday)
+    endDate = str(endyear) + '-' + str(endmonth) + '-' + str(endday)
+    startDate = datetime.strptime(startDate, '%Y-%m-%d').date()
+    endDate = datetime.strptime(endDate, '%Y-%m-%d').date() 
+    post = Majors2016(
+        _id = i,
+        stateabb = majors2016['stateabb'][i],
+        ccode = majors2016['ccode'][i],
+        styear = styear,
+        stmonth = stmonth,
+        stday = stday,
+        endyear = endyear,
+        endmonth = endmonth,
+        endday = endday,
+        startDate = startDate,
+        endDate = endDate,
+        version = majors2016['version'][i]
         )
     try:
         post.save()
