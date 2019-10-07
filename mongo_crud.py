@@ -2,44 +2,17 @@
 # To add a new markdown cell, type '#%% [markdown]'
 
 #%%
-import datetime as dt
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, date
 from pymongo import *
 from mongoengine import *
 
 # from config import database, username, password, authentication_source, replicaset, host, port
 
 # Connect to database with MongoEngine
-disconnect()
+
 # connect(database, username=username, password=password, authentication_source=authentication_source, replicaset=replicaset, host=host, port=port)
-connect('cow-local')
-
-
-#%%
-class country_codes(Document):
-    _id = IntField(required=True)
-    _StateAbb = StringField(required=True)
-    _CCode = IntField(required=True)
-    StateNme = StringField(required=True)
-    updated = DateTimeField(default=datetime.utcnow)
-#%%
-countryCodes = pd.read_csv('Resources/COW country codes.csv')
-countryCodes.head()
-
-#%%
-for i in range(len(countryCodes)):
-    post = country_codes(
-    _id = i,
-    _StateAbb = str(countryCodes['StateAbb'][i]),
-    _CCode = str(countryCodes['CCode'][i]),
-    StateNme = str(countryCodes['StateNme'][i])
-    )
-    try:
-        post.save()
-        print('Success posting record ' + str(i))
-    except: 
-        print('ERROR posting document ' + str(i))
+connect('cow')
 
 #%%
 system2016 = pd.read_csv('Resources/system2016.csv')
@@ -48,7 +21,7 @@ system2016.head()
 #%%
 class System2016(Document):
     _id = IntField(required=True)
-    stateabb = ReferenceField(country_codes, required=True)
+    stateabb = StringField(required=True)
     ccode = IntField(required=True)
     year = IntField(required=True)
     version = IntField(required=True)
@@ -311,6 +284,4 @@ class RevType2(EmbeddedDocument):
     
 
 #%%
-
-
-#%%
+disconnect()
