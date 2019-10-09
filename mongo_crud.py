@@ -2,44 +2,17 @@
 # To add a new markdown cell, type '#%% [markdown]'
 
 #%%
-import datetime as dt
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, date
 from pymongo import *
 from mongoengine import *
 
 # from config import database, username, password, authentication_source, replicaset, host, port
 
 # Connect to database with MongoEngine
-disconnect()
+
 # connect(database, username=username, password=password, authentication_source=authentication_source, replicaset=replicaset, host=host, port=port)
-connect('cow-local')
-
-
-#%%
-class country_codes(Document):
-    _id = IntField(required=True)
-    _StateAbb = StringField(required=True)
-    _CCode = IntField(required=True)
-    StateNme = StringField(required=True)
-    updated = DateTimeField(default=datetime.utcnow)
-#%%
-countryCodes = pd.read_csv('Resources/COW country codes.csv')
-countryCodes.head()
-
-#%%
-for i in range(len(countryCodes)):
-    post = country_codes(
-    _id = i,
-    _StateAbb = str(countryCodes['StateAbb'][i]),
-    _CCode = str(countryCodes['CCode'][i]),
-    StateNme = str(countryCodes['StateNme'][i])
-    )
-    try:
-        post.save()
-        print('Success posting record ' + str(i))
-    except: 
-        print('ERROR posting document ' + str(i))
+connect('cow')
 
 #%%
 system2016 = pd.read_csv('Resources/system2016.csv')
@@ -48,7 +21,7 @@ system2016.head()
 #%%
 class System2016(Document):
     _id = IntField(required=True)
-    stateabb = ReferenceField(country_codes, required=True)
+    stateabb = StringField(required=True)
     ccode = IntField(required=True)
     year = IntField(required=True)
     version = IntField(required=True)
@@ -309,8 +282,98 @@ class RevType2(EmbeddedDocument):
     _id = IntField()
     revtype2 = StringField()
     
+#%%
+midloca = pd.read_csv('Resources/midloc2.0/MIDLOCA_2.0.csv', encoding='ISO-8859-1')
+midloca.head()
+
+# #%%
+# columns = midloca.columns.tolist()
+# for column in columns:
+#     print(column) # + ' = ' + 'Field()')
+# if len(midloca['dispnum']) == len(midloca['dispnum'].unique()): print("All values are unique.")
+#midloca.head()
 
 #%%
-
+class MIDLOCA(Document):
+    year = IntField()
+    dispnum = IntField(required=True, primary_key=True)
+    midloc2_location = StringField()
+    midloc2_measuringpoint = StringField()
+    midloc2_xlongitude = FloatField()
+    midloc2_ylatitude = FloatField()
+    midloc2_coordinates = GeoPointField()
+    midloc2_precision = IntField()
+    midloc2_howobtained = StringField()
+    midloc2_precision_comment = StringField()
+    midloc2_general_comment = StringField()
+    priogrid_cell = IntField()
+    midloc11_location = StringField()
+    midloc11_midlocmeasuringpoint = StringField()
+    midloc11_latitude = FloatField()
+    midloc11_longitude = FloatField()
+    midloc11_coordinates = GeoPointField()
+    midloc11_precision = IntField()
+    updated = DateTimeField(required=True, default=datetime.utcnow)
 
 #%%
+for i in range(len(midloca)):
+    post = MIDLOCA(
+        year = int(midloca['year'][i]),
+        dispnum = int(midloca['dispnum'][i]),
+        midloc2_location = str(midloca['midloc2_location'][i]),
+        midloc2_measuringpoint = str(midloca['midloc2_measuringpoint'][i]),
+        midloc2_xlongitude = float(midloca['midloc2_xlongitude'][i]),
+        midloc2_ylatitude = float(midloca['midloc2_ylatitude'][i]),
+        midloc2_coordinates = [float(midloca['midloc2_xlongitude'][i]), float(midloca['midloc2_ylatitude'][i])],
+        midloc2_precision = int(midloca['midloc2_precision'][i]),
+        midloc2_howobtained = str(midloca['midloc2_howobtained'][i]),
+        midloc2_precision_comment = str(midloca['midloc2_precision_comment'][i]),
+        midloc2_general_comment = str(midloca['midloc2_general_comment'][i]),
+        priogrid_cell = midloca['priogrid_cell'][i],
+        midloc11_location = str(midloca['midloc11_location'][i]),
+        midloc11_midlocmeasuringpoint = str(midloca['midloc11_midlocmeasuringpoint'][i]),
+        midloc11_latitude = float(midloca['midloc11_latitude'][i]),
+        midloc11_longitude = float(midloca['midloc11_longitude'][i]),
+        midloc11_coordinates = [float(midloca['midloc11_longitude'][i]), float(midloca['midloc11_latitude'][i])],
+        midloc11_precision = midloca['midloc11_precision'][i]
+    )
+    try:
+        post.save()
+    except:
+        failures += 1
+        pass
+print("Only " + str(failures) + " documents failed to post!")
+
+#%%
+for i in range(len(midloca)):
+    post = MIDLOCA(
+        year = midloca['year'][i],
+        dispnum = midloca['dispnum'][i],
+        midloc2_location = midloca['midloc2_location'][i],
+        midloc2_measuringpoint = midloca['midloc2_measuringpoint'][i],
+        midloc2_xlongitude = midloca['midloc2_xlongitude'][i],
+        midloc2_ylatitude = midloca['midloc2_ylatitude'][i],
+        midloc2_coordinates = [midloca['midloc2_xlongitude'][i], midloca['midloc2_ylatitude'][i]],
+        midloc2_precision = midloca['midloc2_precision'][i],
+        midloc2_howobtained = midloca['midloc2_howobtained'][i],
+        midloc2_precision_comment = midloca['midloc2_precision_comment'][i],
+        midloc2_general_comment = midloca['midloc2_general_comment'][i],
+        priogrid_cell = midloca['priogrid_cell'][i],
+        midloc11_location = midloca['midloc11_location'][i],
+        midloc11_midlocmeasuringpoint = midloca['midloc11_midlocmeasuringpoint'][i],
+        midloc11_latitude = midloca['midloc11_latitude'][i],
+        midloc11_longitude = midloca['midloc11_longitude'][i],
+        midloc11_coordinates = midloca['midloc11_longitude'][i], midloca['midloc11_latitude'][i]],
+        midloc11_precision = midloca['midloc11_precision'][i]
+    )
+    try:
+        post.save()
+    except:
+        failures += 1
+        pass
+print("Only " + str(failures) + " documents failed to post!")
+
+#%%
+#%%
+disconnect()
+
