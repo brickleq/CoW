@@ -47,9 +47,9 @@ states2016.head()
 
 #%%
 class States2016(Document):
-    _id = IntField(required=True)
-    stateabb = StringField(required=True)
-    ccode = IntField(required=True)
+    #_id = IntField(required=True)
+    stateabb = StringField(required=True, unique=False)
+    ccode = IntField(primary_key=True, required=True)
     statenme = StringField(required=False)
     styear = IntField(required=True)
     stmonth = IntField(required=False)
@@ -57,8 +57,8 @@ class States2016(Document):
     endyear = IntField(required=True)
     endmonth = IntField(required=False)
     endday = IntField(required=False)
-    startDate = DateTimeField(required=True)
-    endDate = DateTimeField(required=True)
+    startdate = DateTimeField(required=True, unique_with='ccode')
+    enddate = DateTimeField(required=True)
     version = IntField(required=True)
     updated = DateTimeField(default=datetime.utcnow)
 
@@ -70,12 +70,12 @@ for i in range(len(states2016)):
     endyear = states2016['endyear'][i]
     endmonth = states2016['endmonth'][i]
     endday = states2016['endday'][i]
-    startDate = str(styear) + '-' + str(stmonth) + '-' + str(stday)
-    endDate = str(endyear) + '-' + str(endmonth) + '-' + str(endday)
-    startDate = datetime.strptime(startDate, '%Y-%m-%d').date()
-    endDate = datetime.strptime(endDate, '%Y-%m-%d').date() 
+    startdate = str(styear) + '-' + str(stmonth) + '-' + str(stday)
+    enddate = str(endyear) + '-' + str(endmonth) + '-' + str(endday)
+    startdate = datetime.strptime(startdate, '%Y-%m-%d').date()
+    enddate = datetime.strptime(enddate, '%Y-%m-%d').date() 
     post = States2016(
-        _id = i,
+        #_id = i,
         stateabb = states2016['stateabb'][i],
         ccode = states2016['ccode'][i],
         statenme = states2016['statenme'][i],
@@ -85,12 +85,14 @@ for i in range(len(states2016)):
         endyear = endyear,
         endmonth = endmonth,
         endday = endday,
-        startDate = startDate,
-        endDate = endDate,
+        startdate = startdate,
+        enddate = enddate,
         version = states2016['version'][i]
         )
     try:
         post.save()
+        print(post.to_json())
+        print()
         print('Success posting document ' + str(i))
     except: 
         print('ERROR posting document ' + str(i))
@@ -109,8 +111,8 @@ class Majors2016(Document):
     endyear = IntField(required=True)
     endmonth = IntField(required=False)
     endday = IntField(required=False)
-    startDate = DateTimeField(required=True)
-    endDate = DateTimeField(required=True)
+    startdate = DateTimeField(required=True)
+    enddate = DateTimeField(required=True)
     version = IntField(required=True)
     updated = DateTimeField(default=datetime.utcnow)
 
@@ -121,10 +123,10 @@ for i in range(len(majors2016)):
     endyear = majors2016['endyear'][i]
     endmonth = majors2016['endmonth'][i]
     endday = majors2016['endday'][i]
-    startDate = str(styear) + '-' + str(stmonth) + '-' + str(stday)
-    endDate = str(endyear) + '-' + str(endmonth) + '-' + str(endday)
-    startDate = datetime.strptime(startDate, '%Y-%m-%d').date()
-    endDate = datetime.strptime(endDate, '%Y-%m-%d').date() 
+    startdate = str(styear) + '-' + str(stmonth) + '-' + str(stday)
+    enddate = str(endyear) + '-' + str(endmonth) + '-' + str(endday)
+    startdate = datetime.strptime(startdate, '%Y-%m-%d').date()
+    enddate = datetime.strptime(enddate, '%Y-%m-%d').date() 
     post = Majors2016(
         _id = i,
         stateabb = majors2016['stateabb'][i],
@@ -135,8 +137,8 @@ for i in range(len(majors2016)):
         endyear = endyear,
         endmonth = endmonth,
         endday = endday,
-        startDate = startDate,
-        endDate = endDate,
+        startdate = startdate,
+        enddate = enddate,
         version = majors2016['version'][i]
         )
     try:
@@ -246,7 +248,7 @@ class HostLev(EmbeddedDocument):
 
 
 #%%
-Ongo2010 = {
+ongo2010 = {
     0:'concluded before 6/30/2010',
     1:'continuing as of 6/30/2010'
 }
@@ -285,7 +287,8 @@ class RevType2(EmbeddedDocument):
 #%%
 midloca = pd.read_csv('Resources/midloc2.0/MIDLOCA_2.0.csv', encoding='ISO-8859-1')
 midloca.head()
-
+#%%
+midloca['midloc11_midlocmeasuringpoint']
 # #%%
 # columns = midloca.columns.tolist()
 # for column in columns:
@@ -296,7 +299,7 @@ midloca.head()
 #%%
 class MIDLOCA(Document):
     year = IntField()
-    dispnum = IntField(required=True, primary_key=True)
+    _dispnum = IntField(required=True, primary_key=True, unique=True)
     midloc2_location = StringField()
     midloc2_measuringpoint = StringField()
     midloc2_xlongitude = FloatField()
@@ -320,7 +323,7 @@ for i in range(len(midloca)):
     post = MIDLOCA(
         year = int(midloca['year'][i]),
         dispnum = int(midloca['dispnum'][i]),
-        midloc2_location = str(midloca['midloc2_location'][i]),
+        midloc2_location = str(midloca['midloc2_location'][i]) if isinstance(midloca['midloc2_location'][i], str) else pass
         midloc2_measuringpoint = str(midloca['midloc2_measuringpoint'][i]),
         midloc2_xlongitude = float(midloca['midloc2_xlongitude'][i]),
         midloc2_ylatitude = float(midloca['midloc2_ylatitude'][i]),
@@ -349,7 +352,7 @@ for i in range(len(midloca)):
     post = MIDLOCA(
         year = midloca['year'][i],
         dispnum = midloca['dispnum'][i],
-        midloc2_location = midloca['midloc2_location'][i],
+        midloc2_location = midloca['midloc2_location'][i] if isinstance(midloca['midloc2_location'][i], str) else midloc2_location = '',
         midloc2_measuringpoint = midloca['midloc2_measuringpoint'][i],
         midloc2_xlongitude = midloca['midloc2_xlongitude'][i],
         midloc2_ylatitude = midloca['midloc2_ylatitude'][i],
