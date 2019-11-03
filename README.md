@@ -1,4 +1,4 @@
-# Exploring Correlates of War Data with MongoDB and Tableau
+# Exploring Correlates of War Data
 
 Update (November 3, 2019): You can download all available CoW data sets at once (in .csv format) by running **collect_csv_data.py**. Extraction of .csv files from .zip archives on CoW servers is performed automatically. Data files will be saved locally in the Resources/ folder of the current working directory.
 
