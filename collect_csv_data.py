@@ -108,8 +108,8 @@ except:
 # for url in zip_urls:
 #     print(url)
 #%%
-no_luck = 0
 print('Retrieving CSV datasets from http://www.correlatesofwar.org....\n')
+no_luck = 0
 for csv in csv_urls:
     try:
         filename = str(csv[0])
@@ -133,8 +133,8 @@ if no_luck > 0:
     print('Failed to save ' + str(no_luck) + ' files in CSV format. Please download them manually to the /Resources/ folder.\n')
 
 #%%
-no_luck = 0
 print('Extracting CSV datasets from ZIP archives at http://www.correlatesofwar.org....\n')
+no_luck = 0
 for csv in zipped_csvs:
     try:
         filename = str(csv[0])
