@@ -3,6 +3,7 @@ import io
 import os
 import pandas as pd
 import requests
+import sys
 if sys.version_info >= (3, 6):
     import zipfile
 else:
