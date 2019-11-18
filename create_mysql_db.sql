@@ -1,4 +1,4 @@
-drop database cow;
+drop database if exists cow;
 create database if not exists cow;
 use cow;
 
