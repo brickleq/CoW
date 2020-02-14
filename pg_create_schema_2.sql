@@ -492,3 +492,31 @@ land int,
 sea int,
 version double precision
 );
+
+drop table directed_dyadic_war;
+create table directed_dyadic_war (
+warnum int references cow_war_list (war_num),
+disno int,
+dyindex	varchar,
+statea int references cow_country_codes (ccode),
+stateb int references cow_country_codes (ccode),
+warstrtmnth	int,
+warstrtday int,
+warstrtyr int,
+warendmnth int,
+warenday int,
+warendyr int,
+year int,
+warolea int,
+waroleb int,
+wardyadrolea int,
+wardyadroleb int,
+outcomea int,
+batdtha int,
+batdthb int,
+changes_1 int,
+changes_2 int,
+batdths int,
+durindx int
+);
+
