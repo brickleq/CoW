@@ -122,7 +122,8 @@ defense	boolean,
 neutrality boolean,
 nonaggression boolean,
 entente boolean,
-version double precision);
+version double precision,
+id int primary key);
 
 create table alliance_by_directed_yearly (
 version4id int,
