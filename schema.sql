@@ -144,7 +144,8 @@ neutrality boolean,
 nonaggression boolean,
 entente boolean,
 year int,
-version double precision
+version double precision,
+id int primary key
 );
 
 create table alliance_by_dyad (
@@ -166,7 +167,8 @@ neutrality boolean,
 nonaggression boolean,
 entente boolean,
 asymetric boolean,
-version double precision
+version double precision,
+id int primary key
 );
 
 
@@ -926,7 +928,7 @@ alter table extra_state_war_data
 add constraint fk_where_fought foreign key (where_fought)
 references regions (where_fought);
 
-CREATE TABLE inter_state_war_data
+/*CREATE TABLE inter_state_war_data
 (
     id integer NOT NULL,
     WarNum integer NOT NULL references cow_war_list (code),
@@ -955,7 +957,59 @@ CREATE TABLE inter_state_war_data
     BatDeath integer,
     Version double precision,
     CONSTRAINT inter_state_war_data_pkey PRIMARY KEY (id)
-);
+);*/
+
+CREATE TABLE public.inter_state_war_data
+(
+    id integer NOT NULL,
+    warnum integer NOT NULL,
+    warname character varying COLLATE pg_catalog."default",
+    wartype integer,
+    ccode integer NOT NULL,
+    statename character varying COLLATE pg_catalog."default",
+    side integer,
+    startmonth1 integer,
+    startday1 integer,
+    startyear1 integer,
+    endmonth1 integer,
+    endday1 integer,
+    endyear1 integer,
+    startmonth2 integer,
+    startday2 integer,
+    startyear2 integer,
+    endmonth2 integer,
+    endday2 integer,
+    endyear2 integer,
+    transfrom integer[],
+    wherefought integer,
+    initiator integer,
+    outcome integer,
+    transto integer,
+    batdeath integer,
+    version double precision,
+    CONSTRAINT inter_state_war_data_pkey PRIMARY KEY (id),
+    CONSTRAINT inter_state_war_data_ccode_fkey FOREIGN KEY (ccode)
+        REFERENCES public.cow_country_codes (ccode) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT inter_state_war_data_warnum_fkey FOREIGN KEY (warnum)
+        REFERENCES public.cow_war_list (code) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT inter_state_war_data_wartype_fkey FOREIGN KEY (wartype)
+        REFERENCES public.typology (war_type_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT inter_state_war_data_wherefought_fkey FOREIGN KEY (wherefought)
+        REFERENCES public.regions (where_fought) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.inter_state_war_data
+    OWNER to pbl;
 
 create table intra_state_war_data (
 war_num int,
@@ -1529,3 +1583,4 @@ CREATE TABLE entities
 
 
 
+select * from majors2016;
