@@ -1227,7 +1227,8 @@ exit int,
 number int,
 indep int,
 conflict int,
-version double precision
+version double precision,
+id serial primary key
 );
 
 create table trade_national (
