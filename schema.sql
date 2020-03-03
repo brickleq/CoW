@@ -1823,3 +1823,14 @@ add primary key (ioname, year);
 
 alter table dyadic_format_v3
 rename to igo_dyadic_format;
+
+create table diplomatic_exchange (
+id INT,
+ccode1 INT REFERENCES cow_country_codes (ccode),
+ccode2 INT REFERENCES cow_country_codes (ccode),
+year INT,
+DR_at_1 INT,
+DR_at_2 INT,
+DE INT,
+version DOUBLE PRECISION
+);
