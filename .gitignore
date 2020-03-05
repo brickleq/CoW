@@ -8,3 +8,4 @@ Resources/*
 *.zip
 *.csv
 *.pdf.dta
+config.js
