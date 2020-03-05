@@ -9,3 +9,4 @@ Resources/*
 *.csv
 *.pdf.dta
 config.js
+node_modules
