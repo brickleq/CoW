@@ -2,6 +2,7 @@
 .vscode
 __pycache__
 config.py
+config.js
 __pycache__/*
 .ipynb_checkpoints
 Resources/*
