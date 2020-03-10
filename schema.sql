@@ -1872,3 +1872,31 @@ cinc DOUBLE PRECISION,
 version INT,
 PRIMARY KEY (ccode, year)
 );
+
+CREATE TABLE non_state_war_data (
+WarNum INT PRIMARY KEY,
+WarName	VARCHAR,
+WarType	INT REFERENCES typology (war_type_id),
+WhereFought	INT REFERENCES regions (where_fought),
+SideA1 VARCHAR,
+SideA2 VARCHAR,
+SideB1 VARCHAR,
+SideB2 VARCHAR,
+SideB3 VARCHAR,
+SideB4 VARCHAR,
+SideB5 VARCHAR,
+StartYear INT,
+StartMonth INT,
+StartDay INT,
+EndYear INT,
+EndMonth INT,
+EndDay INT,
+Initiator VARCHAR(1),
+TransFrom INT,
+TransTo INT,
+Outcome INT,
+SideADeaths INT,
+SideBDeaths INT,
+TotalCombatDeaths INT,
+Version DOUBLE PRECISION
+);
