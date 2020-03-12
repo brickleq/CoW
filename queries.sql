@@ -9,3 +9,5 @@ on m.dispnum3 = x.dispnum3
 where m.ccode in 
 (select ccode from majors2016)
 order by year asc;
+
+select * from alliance_by_dyad_yearly;

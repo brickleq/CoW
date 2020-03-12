@@ -2440,3 +2440,36 @@ wto INT,
 wtouro INT,
 wassen INT,
 PRIMARY KEY (ccode, year));
+
+ALTER TABLE alliance_by_dyad_yearly
+ADD COLUMN id SERIAL PRIMARY KEY;
+
+ALTER TABLE contcol
+ADD COLUMN id SERIAL PRIMARY KEY;
+
+ALTER TABLE contcold
+ADD COLUMN id SERIAL PRIMARY KEY;
+
+ALTER TABLE contcols
+ADD CONSTRAINT pk_contcols
+PRIMARY KEY (stateno, year);
+
+ALTER TABLE contdir
+ADD CONSTRAINT pk_contdir
+PRIMARY KEY (dyad, begin_month);
+
+ALTER TABLE contdird
+ADD COLUMN id SERIAL PRIMARY KEY;
+
+ALTER TABLE contdirs
+ADD CONSTRAINT contdirs_pkey
+PRIMARY KEY (stateno, year);
+
+/*
+@TODO: add primary key to schema for:
+dcad_dyadic
+diplomatic_exchange
+
+@TODO: set primary key for:
+directed_dyadic_war
+*/
