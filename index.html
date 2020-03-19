@@ -16,6 +16,10 @@
   <!-- Custom styles for this template -->
   <link href="css/the-big-picture.css" rel="stylesheet">
 
+  <!-- Cesium JS and CSS -->
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.67/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.67/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -59,6 +63,28 @@
       </div>
     </div>
   </section>
+
+  <div class="container">
+
+    <!-- First Row -->
+    <div class="row">
+
+      <!-- Left border column -->
+      <div class="col-md-1">
+      </div>
+
+      <!-- Main column for Cesium display -->
+      <div class="col-md-10">
+        <div id="cesiumContainer" style="width: 100%;">
+          <script src="midloc.js"></script>
+        </div>
+      </div>
+
+      <!-- Right border column -->
+      <div class="col-md-1">
+      </div>
+
+    </div>
 
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>
