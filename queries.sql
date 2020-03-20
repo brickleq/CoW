@@ -11,3 +11,4 @@ where m.ccode in
 order by year asc;
 
 select * from alliance_by_dyad_yearly;
+

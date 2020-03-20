@@ -2469,6 +2469,11 @@ PRIMARY KEY (stateno, year);
 @TODO: add primary key to schema for:
 dcad_dyadic
 diplomatic_exchange
+mida
+midb
+midi
+midp
+
 
 @TODO: set primary key for:
 directed_dyadic_war
