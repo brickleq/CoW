@@ -8,7 +8,7 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
     navigationHelpButton: false,
     geocoder: false,
     sceneModePicker: false,
-    timeline: true,
+    timeline: false,
   });
 
   
