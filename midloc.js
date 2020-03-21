@@ -11,4 +11,9 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
     timeline: false,
   });
 
-  
+viewer.dataSources.add(Cesium.GeoJsonDataSource.load('/historical-basemaps-master/world_1815.geojson', {
+  stroke: Cesium.Color.HOTPINK,
+  fill: Cesium.Color.PINK,
+  strokeWidth: 3,
+  markerSymbol: '?'
+}));
