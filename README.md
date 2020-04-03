@@ -1,5 +1,7 @@
 # Exploring Correlates of War Data
 
+Update (April 2, 2020): PostgreSQL database schema for all CoW datasets is available as **schema.sql**.
+
 Update (March 19, 2020): MySQL database schema for integrating MID and MIDLOC datasets is available as **create_mysql_db.sql**. (Has not been tested with the most recent version of the MIDLOC data, released January 6, 2020.)
 
 Update (November 3, 2019): You can download all available CoW data sets at once (in .csv format) by running **collect_csv_data.py** in Python 3. Extraction of .csv files from .zip archives on CoW servers is performed automatically. Data files will be saved locally in the Resources/ folder of the current working directory.
