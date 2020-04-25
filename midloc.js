@@ -8,12 +8,22 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
     navigationHelpButton: false,
     geocoder: false,
     sceneModePicker: false,
-    timeline: false,
+    timeline: false
   });
 
-viewer.dataSources.add(Cesium.GeoJsonDataSource.load('/historical-basemaps-master/world_1815.geojson', {
-  stroke: Cesium.Color.HOTPINK,
-  fill: Cesium.Color.PINK,
-  strokeWidth: 3,
-  markerSymbol: '?'
-}));
+// function addGeoJSON() {
+//   viewer.dataSources.add(Cesium.GeoJsonDataSource.load('/historical-basemaps-master/world_1914.geojson', {
+//     stroke: Cesium.Color.HOTPINK,
+//     fill: Cesium.Color.PINK,
+//     strokeWidth: 3
+//   }));
+// }
+
+// addGeoJSON();
+
+var dataSourcePromise = Cesium.GeoJsonDataSource.load('gz_2010_us_040_00_500k.json').then(
+  function(dataSource) {
+    viewer.dataSources.add(dataSource);
+    viewer.zoomTo(dataSource);
+  }
+);
